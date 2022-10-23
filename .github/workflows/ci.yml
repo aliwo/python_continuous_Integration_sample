@@ -34,7 +34,8 @@ jobs:
 
       - name: Run Mypy
         run: poetry run mypy .
-  build:
+
+  test:
     services:
     runs-on: ubuntu-latest
     steps:
