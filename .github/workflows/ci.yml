@@ -34,3 +34,43 @@ jobs:
 
       - name: Run Mypy
         run: poetry run mypy .
+  build:
+    services:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Set timezone to KST
+        run: |
+          sudo rm /etc/localtime
+          sudo ln -s /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+
+      - name: Start Mysql
+        run: |
+          sudo systemctl start mysql
+          mysql -e "use mysql; FLUSH PRIVILEGES; ALTER USER 'root'@'localhost' IDENTIFIED BY 'abcd';" -uroot -proot
+          mysql -e 'CREATE DATABASE ci_project_db;' -u root -p abcd
+
+      - name: Check out the codes
+        uses: actions/checkout@v2
+
+      - name: Setup python environment
+        id: setup-python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+
+      - name: Register Poetry bin
+        run: echo "${HOME}/.poetry/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Run Pytest
+        run: |
+          poetry run coverage run -m pytest
+          poetry run coverage report -m
+          poetry run coverage html
