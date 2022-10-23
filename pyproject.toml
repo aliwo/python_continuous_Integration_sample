@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "ci-project"
+version = "0.1.0"
+description = ""
+authors = ["SW <aliwo@naver.com>"]
+readme = "README.md"
+packages = [{include = "ci_project"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.85.1"
+uvicorn = "^0.19.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.10.0"
+mypy = "^0.982"
+isort = "^5.10.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

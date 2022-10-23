@@ -1,0 +1,17 @@
+# IDE
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+htmlcov/
+.coverage
+.coverage.*
+.benchmarks/
+.env/
+.venv/
+venv/
+.mypy_cache/
+.pytest_cache/
+/out/
