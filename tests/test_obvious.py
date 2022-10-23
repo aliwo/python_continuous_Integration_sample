@@ -8,7 +8,7 @@ class TestObvious(TestCase):
         num_2 = 1
 
         # When
-        result = num_1 + num_2
+        귀요미 = num_1 + num_2
 
         # Then
-        self.assertEqual(result, 2)
+        self.assertEqual(귀요미, 2)
