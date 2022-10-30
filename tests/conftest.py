@@ -9,6 +9,7 @@ from tortoise import generate_config
 from tortoise.contrib.test import finalizer, initializer
 
 from database.config import TORTOISE_APP_MODELS
+from settings import settings
 
 TEST_BASE_URL = "http://test"
 TEST_DB_LABEL = "models"
@@ -17,7 +18,7 @@ TEST_DB_TZ = "Asia/Seoul"
 
 def get_test_db_config() -> Any:
     config = generate_config(
-        db_url="mysql://sw:22380476@localhost:3306/ci_project_db",
+        db_url=f"mysql://{settings.DB_USER}:{settings.DB_PASS}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_DATABASE}",
         app_modules={TEST_DB_LABEL: TORTOISE_APP_MODELS},
         connection_label=TEST_DB_LABEL,
         testing=True,
