@@ -2,8 +2,9 @@
 
 안녕하세요! 저는 3년차 Python 개발자고, 현재 유명 배달 3사 중 한 곳에서 파이썬 개발자로 일 하고 있습니다.
 
-전에 부트 캠프 학생분들에게 Continuous Integration 을 가르치면서 "어떻게 하면 학생들이 CI 를 잘 이해하도록 만들까?"
-를 많이 고민했었는데요 이 repository 에 동작하는 에제를 만들어 놓는 것으로 "CI 는 이렇게 하면 됩니다!" 를 예시를 들어드리고자 합니다.
+전에 부트 캠프 학생분들에게 Continuous Integration 을 가르치면서 CI 의 개념이 학생들에게 정말 어렵구나를 많이 느꼇습니다. 
+"어떻게 하면 학생들이 CI 를 잘 이해하도록 만들까?" 를 많이 고민했었는데요, 
+이 repository 에 동작하는 에제를 만들어 놓는 것으로 "CI 는 이렇게 하면 됩니다!" 를 예시를 들어드리고자 합니다.
 
 편하게 보시고 자유롭게 issue & pull request 남겨주세요!
 
@@ -11,7 +12,7 @@
 
 CI 가 어떻게 동작하는지 바로 보실 수 있도록 친절한 설명과 함께 pull request 형태로 남겨두었습니다. 
 
-* black:
+* black: https://github.com/aliwo/python_continuous_Integration_sample/pulls
 * isort:
 * mypy:
 * pytest
