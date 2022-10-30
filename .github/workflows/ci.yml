@@ -53,6 +53,12 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASS: abcd
+
     steps:
 
       - name: Set timezone to KST
@@ -60,11 +66,11 @@ jobs:
           sudo rm /etc/localtime
           sudo ln -s /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 
-#      - name: Start Mysql
-#        run: |
-#          sudo systemctl start mysql
-#          mysql -e "use mysql; FLUSH PRIVILEGES; ALTER USER 'root'@'localhost' IDENTIFIED BY 'abcd';" -uroot -proot
-#          mysql -e 'CREATE DATABASE ci_project_db;' -u root -p abcd
+      - name: Start Mysql
+        run: |
+          sudo systemctl start mysql
+          mysql -e "use mysql; FLUSH PRIVILEGES; ALTER USER '${{ env.DB_USER }}'@'localhost' IDENTIFIED BY '${{ env.DB_PASS }}';" -uroot -proot
+          mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASS }}
 
       - name: Check out the codes
         uses: actions/checkout@v2
