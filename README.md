@@ -40,4 +40,7 @@ tortoise-orm 을 사용해서 mysql 에 접속하며, 모든 memo 레코드를 �
 * pytest & coverage: 모든 테스트가 통과하는지, coverage 가 너무 낮지는 않은지 체크
 
 
-
+# Tags
+* 파이썬 깃헙액션 연동 
+* CI
+* continuous integration
