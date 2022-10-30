@@ -82,7 +82,7 @@ jobs:
         run: poetry run mypy .
 
 
-  # 자동화 단위테스트를 실행하고 coverage 를 보여줍니다.
+  # 자동화 단위테스트를 실행하고 coverage 를 보여주는 job 입니다.
   # 이 job 은 mysql 을 실행합니다.
   # 테스트는 격리된 환경에서 실시하는것이 옳습니다. 따라서 외부의 mysql 을 사용하지 않고 github action 내부에서 테스트에 사용할 mysql 을 실행합니다.
   # github action 이 제공하는 ubuntu-latest 에는 이미 mysql 이 설치되어 있기 때문에 따로 설치할 필요 없이 실행만 해 주면 됩니다. (설치시간 절약)
