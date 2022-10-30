@@ -1,5 +1,5 @@
+from pydantic import BaseModel  # Import 순서가 잘못되었습니다.
 from fastapi import FastAPI
-from pydantic import BaseModel
 
 from database.memo import Memo
 
