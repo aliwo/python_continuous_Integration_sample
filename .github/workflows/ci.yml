@@ -58,6 +58,7 @@ jobs:
       DB_PORT: 3306
       DB_USER: root
       DB_PASS: abcd
+      DB_DATABASE: ci_project_db
 
     steps:
 
