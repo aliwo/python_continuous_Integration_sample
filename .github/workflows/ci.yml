@@ -36,7 +36,6 @@ jobs:
         run: poetry run mypy .
 
   test:
-    services:
     runs-on: ubuntu-latest
     steps:
 
