@@ -1,9 +1,23 @@
+# 이 파일이 프로젝트의 핵심입니다. github action 이 언제 어떻게 수행될지를 명시합니다.
+#
+
 name: CI
 
+# on push 는 매 번 push 할 때 마다 ci.yml 을 실행하겠다는 뜻 입니다.
 on:
   push:
 
 jobs:
+  # job 은 2개가 있습니다. 하나는 static-analysis 고 다른 하나는 test 입니다.
+  # static-analysis 는 mypy 를 포함한 정적분석을 실행하고
+  # test 는 자동화 단위테스트를 실행합니다.
+
+  # 2개의 job 을 병렬로 실행하면 하나의 job 으로 직렬로 실행하는 것 보다 빠르게 CI 를 수행할 수 있습니다.
+  # * 직렬: -> mysql 실행 -> poetry 설치 -> 종속성 설치 -> black -> isort -> mypy (오래걸림) -> pytest (오래걸림)
+  # * 병렬: ---> poetry 설치 -> 종속성 설치 -> black -> isort -> mypy (오래걸림)
+  #         \--> mysql 실행 -> poetry 설치 -> 종속성 설치 -> pytest (오래걸림)
+  # 보통 mypy 와 pytest 가 오래걸리기 때문에 저는 이 둘을 분리해서 병렬로 실행하는 것을 선호합니다.
+
   static-analysis:
     runs-on: ubuntu-latest
     steps:
@@ -14,8 +28,13 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v2
         with:
+          # 3.10 을 사용하면 숫자 타입으로 인식해 3.1 이 되어버립니다. 따라서 "3.10" 으로 문자라는 것을 지정해 주어야 합니다.
           python-version: "3.10"
 
+      # 매 번 github action 이 실행될 때 마다 10초 ~ 20초씩을 들여서 poetry 를 재설치하는 것은 비효율적입니다.
+      # 따라서 actions/cache@v2 를 사용해서 poetry 가 설치되는 경로인 ~/.local 전체를 캐시해 두었다가 매 번 action 을 실행할 때 마다
+      # 불러옵니다. cache key 는 poetry 의 버전 으로 하였고, 추후에 업그레이드가 필요하다면 수동으로 key 를 수정해주면 됩니다.
+      # 캐시 덕분에 설치 시간 10 ~ 20 초가 -> 캐시를 불러오는 시간 1 ~ 2초 로 절약됩니다.
       - name: Cache Poetry
         id: cache-poetry
         uses: actions/cache@v2
@@ -23,14 +42,22 @@ jobs:
           key: poetry-1.2.2
           path: ~/.local/
 
+      # cache 가 없을 때 처음 한 번 poetry 를 설치합니다.
+      # 설치할 때는 항상 버전을 명시해서 다른 버전이 설치되지 않도록 하는 것이 중요합니다.
+      # 이렇게 설치할 때 버전을 명시한다면 시간이 흘러서 poetry 에 새 버전이 업데이트 된다고 해도 (버전2, 버전3 출시...)
+      # 이 예제는 안정적으로 동작합니다.
       - name: Install Poetry
         if: steps.cache-poetry.outputs.cache-hit != 'true'
         run: |
           curl -sSL https://install.python-poetry.org | python3 - --version 1.2.2
 
+      # Github action 에서 poetry ...  명령어를 실행할 수 있도록 path 에 등록합니다.
       - name: Register Poetry bin
         run: echo "${HOME}/.poetry/bin" >> $GITHUB_PATH
 
+      # 종속성 (fastapi, poetry 등등...) 설치 여부를 검사합니다.
+      # key 로는 poetry.lock 파일과 pyproject.toml 파일을 해시해서 사용합니다. lock 파일이나 pyproject 파일이 한 글자라도 수정된다면
+      # key 값이 달라지게 되서 모든 종속성을 재설치 합니다. 수정되지 않았다면 캐시된 종속성을 불러옵니다.
       - name: Cache dependencies
         id: cache-venv
         uses: actions/cache@v2
@@ -42,6 +69,9 @@ jobs:
         if: steps.cache-venv.outputs.cache-hit != 'true'
         run: poetry install
 
+      # 이 밑으로는 정적검사를 차례대로 실시합니다.
+      # --check 옵션은 검사만 수행하고 실제 파일을 바꾸지 않겠다는 의미입니다.
+      # diff 옵션은 정상적인 경우와 비정상적인 경우를 비교해서 보여달라는 의미입니다.
       - name: Run Black
         run: poetry run black . --check
 
@@ -51,6 +81,11 @@ jobs:
       - name: Run Mypy
         run: poetry run mypy .
 
+
+  # 자동화 단위테스트를 실행하고 coverage 를 보여줍니다.
+  # 이 job 은 mysql 을 실행합니다.
+  # 테스트는 격리된 환경에서 실시하는것이 옳습니다. 따라서 외부의 mysql 을 사용하지 않고 github action 내부에서 테스트에 사용할 mysql 을 실행합니다.
+  # github action 이 제공하는 ubuntu-latest 에는 이미 mysql 이 설치되어 있기 때문에 따로 설치할 필요 없이 실행만 해 주면 됩니다. (설치시간 절약)
   test:
     runs-on: ubuntu-latest
     env:
@@ -62,11 +97,17 @@ jobs:
 
     steps:
 
+      # mysql timezone 은 시스템 timezone 에 의존하기 때문에 timezone 을 설정합니다.
       - name: Set timezone to KST
         run: |
           sudo rm /etc/localtime
           sudo ln -s /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 
+      # mysql 을 실행하고, 비밀번호를 바꾸고 테스트용 데이터베이스를 생성합니다.
+
+      # 간혹 CI 용 데이터베이스의 비밀번호를 github secrets 에 저장해야 하는지 질문을 받았었는데,
+      # CI 에 사용되는 데이터베이스는 보안이 필요 없습니다. 실제 데이터가 저장되지 않기 때문입니다.
+      # 따라서 비밀번호는 단순하게 abcd 로 해도 됩니다.
       - name: Start Mysql
         run: |
           sudo systemctl start mysql
