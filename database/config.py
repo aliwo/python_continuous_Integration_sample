@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from tortoise import Tortoise
 from tortoise.contrib.fastapi import register_tortoise
 
+from settings import settings
+
 DB_MASTER_ALIAS = "default"
 
 
@@ -15,11 +17,11 @@ TORTOISE_ORM = {
         DB_MASTER_ALIAS: {
             "engine": "tortoise.backends.mysql",
             "credentials": {
-                "host": "localhost",
-                "port": "3306",
-                "user": "sw",
-                "password": "22380476",
-                "database": "ci_project_db",
+                "host": settings.DB_HOST,
+                "port": settings.DB_PORT,
+                "user": settings.DB_USER,
+                "password": settings.DB_PASS,
+                "database": settings.DB_DATABASE,
                 "connect_timeout": 5,
             },
         },
