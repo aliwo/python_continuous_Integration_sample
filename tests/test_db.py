@@ -23,4 +23,4 @@ class TestDB(TestCase):
         self.assertEqual(memos[0]["title"], "test 제목")
         self.assertEqual(memos[0]["body"], "test 본문")
         self.assertEqual(memos[1]["title"], "test 제목2")
-        self.assertEqual(memos[1]["body"], "test 본문2")
+        self.assertEqual(memos[1]["body"], "잠깐 여기서 오타를 내버리면")
