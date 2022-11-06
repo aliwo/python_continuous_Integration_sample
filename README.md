@@ -27,8 +27,8 @@ CI 가 어떻게 동작하는지 바로 보실 수 있도록 친절한 설명과
 
 * [black](https://github.com/aliwo/python_continuous_Integration_sample/pull/1)
 * [isort](https://github.com/aliwo/python_continuous_Integration_sample/pull/2)
-* mypy
-* pytest
+* [mypy](https://github.com/aliwo/python_continuous_Integration_sample/pull/3)
+* [pytest](https://github.com/aliwo/python_continuous_Integration_sample/pull/4)
 
 
 # Stack
