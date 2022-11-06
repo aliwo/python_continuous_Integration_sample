@@ -17,6 +17,6 @@ class MemoOut(BaseModel):
 
 
 @app.get("/memos")
-async def get_all_memos() -> list[MemoOut]:
+async def get_all_memos() -> list[dict[str, str]]:
     memos = await Memo.all()
     return [MemoOut(title=memo.title, body=memo.body) for memo in memos]
