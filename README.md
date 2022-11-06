@@ -23,7 +23,7 @@
 
 # Quick Start
 
-CI 가 어떻게 동작하는지 바로 보실 수 있도록 친절한 설명과 함께 pull request 형태로 남겨두었습니다. 
+CI 가 어떻게 동작하는지 바로 보실 수 있도록 친절한 설명과 함께 pull request 형태로 남겨두었습니다. 클릭해 보세요!
 
 * [black](https://github.com/aliwo/python_continuous_Integration_sample/pull/1)
 * [isort](https://github.com/aliwo/python_continuous_Integration_sample/pull/2)
